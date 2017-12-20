@@ -1,19 +1,18 @@
 const API_KEY = "MzE5OTAwODU1MDczNzY3NDI1.DRvRDg.XDOmro4656-2EFTUAHucV5d8XaA";
-let discord = require("discord.js");
-let ytdl = require('ytdl-core');
+var discord = require("discord.js");
+var ytdl = require('ytdl-core');
 
-let bot = new discord.Client();
-var voiceChannel = null;
+var bot = new discord.Client();
 
 bot.on('ready', function () {
     console.log('I am ready');
 });
 
 bot.on('message', function (message) {
-    let messageParts = message.content.split(' ');
+    var messageParts = message.content.split(' ');
 
-    let command = messageParts[0].toLowerCase();
-    let parameters = messageParts.splice(1, messageParts.length);
+    var command = messageParts[0].toLowerCase();
+    var parameters = messageParts.splice(1, messageParts.length);
 
     console.log("command: " + command);
     console.log("parameters: " + parameters);
@@ -54,7 +53,7 @@ function JoinCommand(channelName, message) {
         voiceChannel.disconnect();
     }
 
-    voiceChannel = message.member.voiceChannel; //GetChannelByName(channelName);
+    var voiceChannel = message.member.voiceChannel; //GetChannelByName(channelName);
     /*voiceChannel.on('speaking', (user, speaking) => {
 
         // the audio has finished playing, so remove it from the queue and start playing the next song
@@ -121,7 +120,7 @@ function QueueYtAudioStream(videoId) {
 // plays a given stream
 function PlayStream(videoId) {
 
-    const streamOptions = { seek: 0, volume: 0.05, bitrate: 64000};
+    const streamOptions = { seek: 0, volume: 0.1, bitrate: 64000};
 
 
     var streamUrl = "https://www.youtube.com/watch?v=${videoId}";
