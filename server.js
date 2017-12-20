@@ -127,7 +127,7 @@ function PlayStream(videoId) {
     console.log("Streaming audio from " + streamUrl);
 
     if (streamUrl) {
-        const stream = ytdl('https://www.youtube.com/watch?v=Mq-17KSxIAA');
+        const stream = ytdl('https://www.youtube.com/watch?v=tmq6u_hRIsU');
         const dispatcher = bot.voiceConnections.first().playStream(stream, streamOptions);
     }
 }
