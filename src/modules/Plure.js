@@ -13,12 +13,19 @@ class Plure {
             volume: 0.1,
             bitrate: 64000
         };
-        this.currentTrack = 'https://www.youtube.com/watch?v=E8gmARGvPlI';
+        this.mainTrack = 'https://www.youtube.com/watch?v=tmq6u_hRIsU';
+        this.currentTrack = 'https://www.youtube.com/watch?v=tmq6u_hRIsU';
         this.stream = null;
         this.dispatcher = null;
     }
 
-    play() {
+    play(song) {
+        if (ytdl.validateURL(song)) {
+            this.currentTrack = song;
+        } else {
+            this.currentTrack = this.mainTrack;
+        }
+        
         if (this.currentTrack) {
             this.stream = ytdl(this.currentTrack, {filter: 'audio'});
             this.dispatcher = this.father.bot.voiceConnections.first().playStream(this.stream, this.streamOptions);

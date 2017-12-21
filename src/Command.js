@@ -56,7 +56,7 @@ class Command {
      * @param msg
      * @returns {Promise<"discord.js".VoiceConnection>}
      */
-   join(msg, initiator, myarg) {
+   join(msg, initiator) {
        let voiceChannel = msg.member.voiceChannel;
        if (voiceChannel) {
            return voiceChannel.join();
@@ -65,7 +65,7 @@ class Command {
    }
 
    play(msg, initiator, song) {
-       this.father.plure.play();
+       this.father.plure.play(song);
    }
 
    pause(msg, initiator) {
