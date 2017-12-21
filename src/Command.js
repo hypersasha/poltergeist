@@ -64,20 +64,27 @@ class Command {
        return false;
    }
 
+   rejoin(msg, initiator) {
+       if (this.father.bot.voiceConnections.first()) {
+           this.father.bot.voiceConnections.first().disconnect();
+       }
+       this.join(msg, initiator);
+       if (this.father.plure.playing) {
+           this.father.plure.play(this.father.plure.currentTrack);
+       }
+   }
+
    play(msg, initiator, song) {
        this.father.plure.play(song);
    }
 
    pause(msg, initiator) {
+
        this.father.plure.pause();
    }
 
    resume(msg, initiator) {
        this.father.plure.resume();
-   }
-
-   time(msg, initiator) {
-       this.father.plure.time();
    }
 
    getPermissions(tag) {

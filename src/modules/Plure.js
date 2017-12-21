@@ -17,33 +17,68 @@ class Plure {
         this.currentTrack = 'https://www.youtube.com/watch?v=tmq6u_hRIsU';
         this.stream = null;
         this.dispatcher = null;
+        this.volumeUpdaterTime = null;
+        this.playing = false;
     }
 
     play(song) {
-        if (ytdl.validateURL(song)) {
+
+        if (!this.father.bot.voiceConnections.first()) {
+            return false;
+        }
+
+        if (song && ytdl.validateURL(song)) {
             this.currentTrack = song;
+            console.log('new current track! ' + song);
         } else {
             this.currentTrack = this.mainTrack;
         }
-        
-        if (this.currentTrack) {
-            this.stream = ytdl(this.currentTrack, {filter: 'audio'});
+        // If stream already playing, just update composition
+        if (this.stream && this.currentTrack) {
+            this.volumeUpdaterTime = setInterval(() => { this.volumeDown(() => {this.updateStream();}); }, 200);
+        }
+        // Create new stream.
+        if (this.currentTrack && !this.stream) {
+            this.stream = ytdl(this.currentTrack);
             this.dispatcher = this.father.bot.voiceConnections.first().playStream(this.stream, this.streamOptions);
         }
+        this.playing = true;
+    }
+
+    /**
+     * Slow volume down to 0.
+     */
+    volumeDown(callback) {
+        this.dispatcher.setVolume(this.dispatcher.volume - 0.02);
+        if (this.dispatcher.volume <= 0) {
+            clearInterval(this.volumeUpdaterTime);
+            callback();
+        }
+    }
+
+    /**
+     * Update streaming song.
+     */
+    updateStream() {
+        this.stream.destroy();
+        this.dispatcher.end();
+        setTimeout(() => {
+            this.stream = ytdl(this.currentTrack);
+            this.dispatcher = this.father.bot.voiceConnections.first().playStream(this.stream, this.streamOptions);
+        }, 1800);
     }
 
     /**
      * Pause music broadcasting.
      */
     pause() {
-        if (this.dispatcher) {
-            this.dispatcher.pause();
-        }
-    }
-
-    time() {
-        console.log('TIME: ');
-        console.log(this.dispatcher.time);
+        this.volumeUpdaterTime = setInterval(() => {
+            this.volumeDown(() => {
+                if (this.dispatcher) {
+                    this.dispatcher.pause();
+                }
+            });
+        }, 200);
     }
 
     /**
@@ -51,6 +86,7 @@ class Plure {
      */
     resume() {
         if (this.dispatcher && this.dispatcher.paused) {
+            this.dispatcher.setVolume(this.streamOptions.volume);
             this.dispatcher.resume();
         }
     }
