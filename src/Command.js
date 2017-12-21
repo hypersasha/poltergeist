@@ -77,6 +77,9 @@ class Command {
        if (this.father.bot.voiceConnections.first()) {
            this.father.plure.stop();
            this.father.bot.voiceConnections.first().disconnect();
+           return {done: ":wave: Good bye!"};
+       } else {
+           return {error: "I don't belong to any voice channel!"};
        }
    }
 
@@ -100,8 +103,13 @@ class Command {
        this.father.plure.resume();
    }
 
-    volume(msg, initiator, volume) {
-        this.father.plure.setVolume(volume);
+   volume(msg, initiator, volume) {
+        let res = this.father.plure.setVolume(volume);
+        if (res !== undefined) {
+            return {done: ":loud_sound: Volume set to " + res};
+        } else {
+            return {error: "Cannot update volume."};
+        }
     }
 
     /**

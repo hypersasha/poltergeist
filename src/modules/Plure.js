@@ -113,7 +113,11 @@ class Plure {
                 vol = 1;
             }
             this.dispatcher.setVolume(vol);
+        } else {
+            vol = this.streamOptions.volume;
+            this.dispatcher.setVolume(vol);
         }
+        return vol;
     }
 }
 
