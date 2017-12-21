@@ -1,0 +1,13 @@
+default:
+  permissions:
+    - play
+    - skip
+owner:
+  inheritance:
+    - default
+  permissions:
+    - pause
+    - resume
+    - volume
+    - join
+    - time
