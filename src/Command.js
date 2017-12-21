@@ -35,11 +35,7 @@ class Command {
        }
 
        // Check this command for available
-       if (this[command]) {
-           args.unshift(initiator);
-           args.unshift(msg);
-           return this[command].apply(this, args);
-       } else {
+       if (!this[command]) {
            return {error: 'Can\'t find this command.'};
        }
 
@@ -47,6 +43,13 @@ class Command {
        if (groupPermissions.indexOf(command) < 0) {
            return {error: 'You don\'t have permission for this command.'};
        }
+
+       if (this[command]) {
+           args.unshift(initiator);
+           args.unshift(msg);
+           return this[command].apply(this, args);
+       }
+
    }
 
    /* Command Handlers */
@@ -59,27 +62,37 @@ class Command {
    join(msg, initiator) {
        let voiceChannel = msg.member.voiceChannel;
        if (voiceChannel) {
-           return voiceChannel.join();
+           voiceChannel.join();
+           return {done: ':thumbsup: Joining your voice channel.'};
+       } else {
+           return {error: 'Can\'t join to Your voice channel.'};
        }
-       return false;
    }
 
-   rejoin(msg, initiator) {
+    /**
+     * Disconnect from voice channel.
+     * @param msg
+     */
+   disconnect(msg) {
        if (this.father.bot.voiceConnections.first()) {
+           this.father.plure.stop();
            this.father.bot.voiceConnections.first().disconnect();
        }
-       this.join(msg, initiator);
-       if (this.father.plure.playing) {
-           this.father.plure.play(this.father.plure.currentTrack);
-       }
    }
 
+    /**
+     * Plure Commands.
+     */
    play(msg, initiator, song) {
-       this.father.plure.play(song);
+       let res = this.father.plure.play(song);
+       if (res) {
+           return {done: ':musical_note: Starting music broadcasting.'};
+       } else {
+           return {error: 'Can\'t start music broadcasting.'};
+       }
    }
 
    pause(msg, initiator) {
-
        this.father.plure.pause();
    }
 
@@ -87,6 +100,15 @@ class Command {
        this.father.plure.resume();
    }
 
+    volume(msg, initiator, volume) {
+        this.father.plure.setVolume(volume);
+    }
+
+    /**
+     * Handler to get user permissions.
+     * @param tag
+     * @returns {string}
+     */
    getPermissions(tag) {
        for( let pem in this.pemTags ) {
            if (this.pemTags[pem].indexOf(tag) >= 0) {

@@ -1,7 +1,6 @@
 default:
   permissions:
     - play
-    - skip
 owner:
   inheritance:
     - default
@@ -10,4 +9,4 @@ owner:
     - resume
     - volume
     - join
-    - rejoin
+    - disconnect

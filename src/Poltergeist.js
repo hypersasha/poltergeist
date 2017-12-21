@@ -18,9 +18,16 @@ class Poltergeist {
         });
         this.bot.on('message', (msg) => {
             let processedMessage = chat.processMessage(msg.author.tag, msg.content);
-            console.log(processedMessage);
             if (processedMessage.command) {
                 let result = this.cmd.runCommand(processedMessage.author, processedMessage.command, msg, processedMessage.args);
+                if (result) {
+                    if (result.done) {
+                        msg.reply(result.done);
+                    }
+                    if (result.error) {
+                        msg.reply(":no_entry: " + result.error);
+                    }
+                }
             }
         });
         this.bot.login("MzE5OTAwODU1MDczNzY3NDI1.DRvRDg.XDOmro4656-2EFTUAHucV5d8XaA");
